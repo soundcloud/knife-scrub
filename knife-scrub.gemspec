@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/soundcloud/knife-scrub'
   s.summary     = 'knife plugin to scrub normal attributes of chef-server'
   s.description = 'Collection of knife plugins to remove orphaned objects from chef-server'
+  s.license     = 'Apache 2.0'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
