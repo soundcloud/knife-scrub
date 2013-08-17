@@ -51,7 +51,8 @@ class Chef
             next
           end
 
-          unless ui.confirm format(node, "Do you want to delete #{parent.fetch(key).inspect}")
+          value = parent.value_at_current_nesting(parent.normal, key).fetch(key)
+          unless ui.confirm format(node, "Do you want to delete #{value.inspect}")
             next
           end
 
