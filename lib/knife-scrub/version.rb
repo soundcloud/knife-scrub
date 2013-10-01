@@ -18,7 +18,7 @@
 
 module Knife
   module Scrub
-    VERSION = '0.1.2'
+    VERSION = '0.2.0'
     MAJOR, MINOR, TINY = VERSION.split('.')
   end
 end

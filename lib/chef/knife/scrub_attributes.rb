@@ -27,6 +27,7 @@ class Chef
 
       deps do
         require 'chef/search/query'
+        require 'chef/knife/scrub/attribute_extractor'
       end
 
       option :query,
@@ -44,19 +45,19 @@ class Chef
 
         search = Chef::Search::Query.new
         search.search('node', config[:query]) do |node|
-          parent, key = extract(node.normal, prefix)
+          extractor = Scrub::AttributeExtractor.create(node)
 
-          unless parent && parent.component_has_key?(parent.normal, key)
+          unless extractor.has_key?(prefix)
             ui.msg format(node, "unknown normal attribute #{prefix}")
             next
           end
 
-          value = parent.value_at_current_nesting(parent.normal, key).fetch(key)
+          value = extractor.fetch(prefix)
           unless ui.confirm format(node, "Do you want to delete #{value.inspect}")
             next
           end
 
-          if deleted = parent.delete_from_component(parent.normal, key)
+          if deleted = extractor.delete(prefix)
             node.save
             ui.msg format(node, "deleted normal attribute #{deleted.inspect}")
           else
@@ -69,27 +70,6 @@ class Chef
 
       def format(node, text)
         "#{ui.color(node.fqdn, :cyan)}: #{text}"
-      end
-
-      def extract(data, nested_value_spec)
-        spec = nested_value_spec.split(".")
-        key = spec.pop
-        spec.each do |attr|
-          if data.nil?
-            nil # don't get no method error on nil
-          elsif data.respond_to?(attr.to_sym)
-            data = data.send(attr.to_sym)
-          elsif data.respond_to?(:[])
-            data = data[attr]
-          else
-            data = begin
-              data.send(attr.to_sym)
-            rescue NoMethodError
-              nil
-            end
-          end
-        end
-        [data, key]
       end
 
     end
