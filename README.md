@@ -22,6 +22,12 @@ It's possible to restrict the node search to a given pattern with `--query`:
 $ knife scrub attributes -q roles:web nagios.services
 ```
 
+In order to just display all nodes with normal attributes, use `--dry-run`:
+
+```bash
+$ knife scrub attributes -d nagios.services
+```
+
 The usual `--yes` / `-y` flag works as well:
 
 ```bash
