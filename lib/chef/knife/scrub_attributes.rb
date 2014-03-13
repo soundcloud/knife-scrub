@@ -36,6 +36,12 @@ class Chef
         :description => "Limit nodes with provided query. Default: #{DEFAULT_QUERY}",
         :default => DEFAULT_QUERY
 
+      option :dry_run,
+        :short => '-d',
+        :long => '--dry-run',
+        :description => "Show nodes which have normal attributes",
+        :default => false
+
       def run
         unless prefix = name_args.first
           show_usage
@@ -48,11 +54,16 @@ class Chef
           extractor = Scrub::AttributeExtractor.create(node)
 
           unless extractor.has_key?(prefix)
-            ui.msg format(node, "unknown normal attribute #{prefix}")
+            ui.msg format(node, "normal attribute #{prefix} not present")
             next
           end
 
           value = extractor.fetch(prefix)
+          if config[:dry_run]
+            ui.msg format(node, "normal attribute #{prefix}: #{value.inspect}")
+            next
+          end
+
           unless ui.confirm format(node, "Do you want to delete #{value.inspect}")
             next
           end
