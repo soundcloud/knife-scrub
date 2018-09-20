@@ -80,7 +80,7 @@ class Chef
       protected
 
       def format(node, text)
-        "#{ui.color(node.fqdn, :cyan)}: #{text}"
+        "#{ui.color(node.name, :cyan)}: #{text}"
       end
 
     end
